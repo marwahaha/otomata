@@ -1,24 +1,15 @@
-import logo from './logo.svg';
 import './App.css';
+import { Clock } from './Clock';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Clock scale={["C4", "D4", "G4", "F4"]}/>
+      <Clock scale={["C5", "D5", "G5", "Bb4"]}/>
+      <Clock scale={["C5", "D5", "C5", "Bb4"]}/>
+
+      </div>
   );
 }
 

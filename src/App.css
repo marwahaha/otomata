@@ -1,4 +1,5 @@
 .App {
+  margin: 20px;
   text-align: center;
 }
 
@@ -28,11 +29,9 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.cell {
+  display: inline-block;
+  width:100px;
+  border: 1px solid black;
 }
