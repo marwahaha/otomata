@@ -11,7 +11,7 @@ export class Row extends React.Component {
       <div>
         {
           this.grid.map(num => {
-            return <Cell key={this.props.offset * this.props.len + num} val={this.props.offset * this.props.len + num} />
+            return <Cell key={this.props.offset * this.props.len + num} val={this.props.vals[num]} />
 
           })
         }
