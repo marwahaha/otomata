@@ -1,10 +1,12 @@
 import React from 'react';
 import { Row } from './Row';
 import { Widget } from './Widget';
+
 export class Grid extends React.Component {
   constructor(props) {
     super(props);
     this.grid = [...Array(this.props.gridsize).keys()];
+
     this.widgetIdxs = [];
     this.state = {
       widgetIdxs: this.widgetIdxs,
@@ -19,6 +21,7 @@ export class Grid extends React.Component {
   }
 
   updateVals() {
+    // todo: update refs as a ticker
     let vals = new Array(this.props.gridsize).fill(0)
       .map(x => new Array(this.props.gridsize).fill(0));
 
@@ -48,6 +51,7 @@ export class Grid extends React.Component {
         {
           this.state.widgetIdxs.map(idx => {
             return <Widget
+              ref={idx}
               idx={idx}
               key={idx}
               updatePosAction={this.props.updatePosAction}
