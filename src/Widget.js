@@ -1,5 +1,6 @@
 import React from 'react';
-export class Widget extends React.Component {
+import { Ticker } from './Ticker';
+export class Widget extends Ticker {
     constructor(props) {
         super(props);
         this.pos = [0, 0];
@@ -36,9 +37,13 @@ export class Widget extends React.Component {
         }
     }
 
-    render() {
+    tick() {
+        this.move();
+    }
+
+    subrender() {
         return (
-            <div>
+            <span>
                 pos: {this.state.pos.toString()}
                 dir: {this.state.dir.toString()}
                 <button onClick={this.move}>
@@ -47,7 +52,7 @@ export class Widget extends React.Component {
                 <button onClick={this.changeDir}>
                     Change Dir
                 </button>
-            </div>
+            </span>
         );
     }
 }

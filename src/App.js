@@ -6,6 +6,7 @@ import { Widget } from './Widget';
 function App() {
   return (
     <div className="App">
+
       Clocks
       <Clock scale={["C4", "D4", "G4", "F4"]} />
       <Clock scale={["C5", "D5", "G5", "Bb4"]} />
@@ -16,7 +17,10 @@ Grid
       <br />
       Widget
       <Widget gridsize={3} />
+      <br />
+
     </div>
+
   );
 }
 
