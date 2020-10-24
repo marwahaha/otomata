@@ -1,9 +1,17 @@
 import React from 'react';
 export class Ticker extends React.Component {
+    tick() {
+        throw new Error("tick not implemented");
+    }
+
+    subrender() {
+        throw new Error("subrender not implemented");
+    }
+
     setTimer = () => {
         this.timerID = setInterval(
             () => this.tick(),
-            1000
+            500
         );
         this.setState({ ...this.state, timerSet: true });
     }
@@ -15,14 +23,6 @@ export class Ticker extends React.Component {
 
     componentWillUnmount() {
         this.unsetTimer();
-    }
-
-    tick() {
-        throw new Error("tick not implemented");
-    }
-
-    subrender() {
-        throw new Error("subrender not implemented");
     }
 
     render() {

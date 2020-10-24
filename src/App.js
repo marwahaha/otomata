@@ -25,8 +25,8 @@ class App extends Component {
 Grid
         <Grid
           widgetsPos={this.props.widgetPositionReducer}
-          gridsize={5}
-          scale={["C4", "D4", "E4", "G4", "A4"]}
+          gridsize={4}
+          scale={["C4", "D4", "E4", "F#4", "G#4", "A#4", "B4", "D5"]}
           updatePosAction={this.props.updatePosAction}
         // todo validate scale size = gridsize
         />

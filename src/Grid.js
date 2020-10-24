@@ -1,8 +1,9 @@
 import React from 'react';
 import { Row } from './Row';
 import { Widget } from './Widget';
+import { Ticker } from './Ticker';
 
-export class Grid extends React.Component {
+export class Grid extends Ticker {
   constructor(props) {
     super(props);
     this.grid = [...Array(this.props.gridsize).keys()];
@@ -21,15 +22,42 @@ export class Grid extends React.Component {
   }
 
   updateVals() {
-    // todo: update refs as a ticker
     let vals = new Array(this.props.gridsize).fill(0)
       .map(x => new Array(this.props.gridsize).fill(0));
 
     (Object.values(this.props.widgetsPos) || []).forEach(pos => {
-      vals[pos[0]][pos[1]] += 1;
+      vals[pos[1]][pos[0]] += 1;
     })
     this.setState({ ...this.state, vals });
   }
+
+  tick() {
+    (Object.values(this.refs) || []).forEach(r => r.move());
+    this.handleCollisions();
+  }
+
+  handleCollisions() {
+    const keysAndVals = Object.entries(this.props.widgetsPos)
+      .map(x => [x[0], x[1].join(',')]);
+
+    const collidingWidgetIds = Object.values(this.groupBy(keysAndVals, 1, 0))
+      .filter(x => x.length > 1)
+      .flat();
+
+    collidingWidgetIds.forEach(id => this.refs[id].changeDir());
+    // TODO this won't prevent if they have the same dir.. but they shouldn't!
+
+    // TODO will this have the new state positions in time?
+    // could put in  updateVals but I only want to trigger it once
+    // Object.values(this.refs) || []).forEach()
+  }
+
+  groupBy(xs, key, access) {
+    return xs.reduce(function (rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x[access]);
+      return rv;
+    }, {});
+  };
 
   componentDidUpdate(prevProps) {
     if (prevProps.widgetsPos !== this.props.widgetsPos) {
@@ -38,7 +66,7 @@ export class Grid extends React.Component {
     }
   }
 
-  render() {
+  subrender() {
     return (
       <div>
         {

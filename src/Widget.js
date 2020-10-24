@@ -28,6 +28,14 @@ export class Widget extends React.Component {
             this.setState({ ...this.state, pos: this.pos });
         }
         this.move = () => {
+
+            // if this will hit the wall, reverse and sound and finish
+            if (this.didHitWall()) {
+                this.setState({ ...this.state, dir: (this.state.dir + 2) % 4 });
+                this.makeSound();
+                return;
+            }
+
             if (this.state.dir === 0) {
                 this.up();
             } else if (this.state.dir === 1) {
@@ -50,12 +58,7 @@ export class Widget extends React.Component {
         }
 
         this.changeDir = () => {
-            let newDir = (this.state.dir + 1) % 4;
-            // if this will hit the wall, reverse
-            if (this.didHitWall(newDir)) {
-                newDir = (newDir + 2) % 4;
-            }
-            this.setState({ ...this.state, dir: newDir });
+            this.setState({ ...this.state, dir: (this.state.dir + 1) % 4 });
         }
     }
 
@@ -84,6 +87,7 @@ export class Widget extends React.Component {
     render() {
         return (
             <div>
+                idx: {this.props.idx}
                 pos: {this.state.pos.toString()}
                 dir: {this.state.dir.toString()}
                 <button onClick={this.move}>
