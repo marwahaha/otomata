@@ -1,7 +1,6 @@
 import './App.css';
 import { Clock } from './Clock';
 import { Grid } from './Grid';
-import { Widget } from './Widget';
 import { connect } from 'react-redux';
 import { updatePosAction } from './actions/updatePosAction';
 import { Component } from 'react';
@@ -24,14 +23,15 @@ class App extends Component {
         <Clock scale={["C5", "D5"]} />
         <br />
 Grid
-        <Grid widgetsPos={this.props.widgetPositionReducer} gridsize={5} />
-        <Widget idx={0} updatePosAction={this.props.updatePosAction} gridsize={5} scale={["C4", "D4", "G4", "F4", "D4"]} />
-        <Widget idx={1} updatePosAction={this.props.updatePosAction} gridsize={5} scale={["F4", "G4", "D4", "C4", "E4"]} />
-
+        <Grid
+          widgetsPos={this.props.widgetPositionReducer}
+          gridsize={5}
+          scale={["C4", "D4", "E4", "G4", "A4"]}
+          updatePosAction={this.props.updatePosAction}
+        // todo validate scale size = gridsize
+        />
         <br />
-      Widget
-        <br />
-
+        Redux Store
         <pre>
           {
             JSON.stringify(this.props)

@@ -40,6 +40,8 @@ export class Widget extends Ticker {
         this.changeDir = () => {
             this.setState({ ...this.state, dir: (this.state.dir + 1) % 4 })
         }
+        this.props.updatePosAction(this.props.idx, this.pos);
+
     }
 
     tick() {
