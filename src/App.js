@@ -3,13 +3,15 @@ import { Clock } from './Clock';
 import { Grid } from './Grid';
 import { connect } from 'react-redux';
 import { updatePosAction } from './actions/updatePosAction';
+import { updateDirAction } from './actions/updateDirAction';
 import { Component } from 'react';
 
 const mapStateToProps = state => ({
   ...state
 })
 const mapDispatchToProps = dispatch => ({
-  updatePosAction: (idx, pos) => dispatch(updatePosAction(idx, pos))
+  updatePosAction: (idx, pos) => dispatch(updatePosAction(idx, pos)),
+  updateDirAction: (idx, dir) => dispatch(updateDirAction(idx, dir))
 })
 
 class App extends Component {
@@ -25,9 +27,11 @@ class App extends Component {
 Grid
         <Grid
           widgetsPos={this.props.widgetPositionReducer}
-          gridsize={4}
-          scale={["C4", "D4", "E4", "F#4", "G#4", "A#4", "B4", "D5"]}
+          widgetsDir={this.props.widgetDirectionReducer}
+          gridsize={6}
+          scale={["C4", "C#4", "E4", "F#4", "G#4", "A#4", "B4", "D5"]}
           updatePosAction={this.props.updatePosAction}
+          updateDirAction={this.props.updateDirAction}
         // todo validate scale size = gridsize
         />
         <br />
@@ -47,4 +51,5 @@ Grid
 // then make sounds if on edge
 // then change directions if overlap
 
+// TODO may not need redux if use refs on state
 export default connect(mapStateToProps, mapDispatchToProps)(App);

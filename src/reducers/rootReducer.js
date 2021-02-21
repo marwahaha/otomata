@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
-import widgetPositionReducer from './widgetPositionReducer'; export default combineReducers({
-    widgetPositionReducer
+import widgetDirectionReducer from './widgetDirectionReducer';
+import widgetPositionReducer from './widgetPositionReducer';
+export default combineReducers({
+    widgetPositionReducer, widgetDirectionReducer
 });

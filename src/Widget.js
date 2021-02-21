@@ -7,7 +7,8 @@ export class Widget extends React.Component {
 
         this.pos = [0, 0];
         this.state = { dir: 0, pos: this.pos };
-        this.props.updatePosAction(this.props.idx, this.pos);
+        this.props.updatePosAction(this.props.idx, this.state.pos);
+        this.props.updateDirAction(this.props.idx, this.state.dir);
         this.synth = new Tone.Synth().toDestination();
         this.play = v => this.synth.triggerAttackRelease(v, "8n");
 
@@ -31,11 +32,14 @@ export class Widget extends React.Component {
 
             // if this will hit the wall, reverse and sound and finish
             if (this.didHitWall()) {
-                this.setState({ ...this.state, dir: (this.state.dir + 2) % 4 });
+                let newDir = (this.state.dir + 2) % 4
+                this.setState({ ...this.state, dir: newDir });
+                this.props.updateDirAction(this.props.idx, newDir);
                 this.makeSound();
                 return;
             }
 
+            console.log(this.props.idx, this.state.dir);
             if (this.state.dir === 0) {
                 this.up();
             } else if (this.state.dir === 1) {
@@ -46,19 +50,21 @@ export class Widget extends React.Component {
                 this.left();
             }
 
-            // update redux store
-            this.props.updatePosAction(this.props.idx, this.pos);
-
             // change dir and make sound if hit a wall
             this.props.updatePosAction(this.props.idx, this.state.pos);
             if (this.didHitWall()) {
-                this.setState({ ...this.state, dir: (this.state.dir + 2) % 4 });
+                let newDir = (this.state.dir + 2) % 4;
+                this.setState({ ...this.state, dir: newDir });
+                this.props.updateDirAction(this.props.idx, newDir);
                 this.makeSound();
             }
         }
 
         this.changeDir = () => {
-            this.setState({ ...this.state, dir: (this.state.dir + 1) % 4 });
+            console.log("CHANGE DIR?")
+            let newDir = (this.state.dir + 1) % 4;
+            this.setState({ ...this.state, dirs: newDir });
+            this.props.updateDirAction(this.props.idx, newDir);
         }
     }
 
@@ -90,12 +96,6 @@ export class Widget extends React.Component {
                 idx: {this.props.idx}
                 pos: {this.state.pos.toString()}
                 dir: {this.state.dir.toString()}
-                <button onClick={this.move}>
-                    Move
-                </button>
-                <button onClick={this.changeDir}>
-                    Change Dir
-                </button>
             </div>
         );
     }
