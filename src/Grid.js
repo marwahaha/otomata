@@ -16,10 +16,7 @@ export class Grid extends Ticker {
       vals: this.initVals(),
     }
 
-    // so far: just support adding, not deleting...
-    // TODO - I wish this didn't initialize on the top left, but actually where I clicked.
-    // Could have callback function to Cell, but then need a way to initialize Widget at location
-    // does this need to put pos and dir in props?
+    // TODO so far: just support adding, not deleting...
     this.addWidget = (pos0 = 0, pos1 = 0) => {
       this.widgets.push({ idx: this.state.widgets.length, pos: [pos0, pos1], dir: 0 });
       this.synths.push(new Tone.Synth().toDestination());

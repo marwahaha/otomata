@@ -1,3 +1,25 @@
+
+"Conway": A new generative musical sequencer
+
+The name is in progress. This is heavily inspired by Otomata by Earslap, written in Flash in 2011.
+
+Check out [the work in progress](https://marwahaha.github.io/conway/).
+
+
+## Debugging stuff
+
+Clock was a test of the grid:
+```
+        {/* Clocks
+        <Clock scale={["C4", "D4", "G4", "F4"]} />
+        <Clock scale={["C5", "D5", "G5", "Bb4"]} />
+        <Clock scale={["C5", "D5"]} /> */}
+        {/* <br /> */}
+{/* Grid */}
+```
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
