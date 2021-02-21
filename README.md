@@ -8,6 +8,9 @@ Check out [the work in progress](https://marwahaha.github.io/conway/).
 
 ## Debugging stuff
 
+Run `npm run deploy` to update website. I dont think it can be done from GitHub Actions...
+
+
 Clock was a test of the grid:
 ```
         {/* Clocks
