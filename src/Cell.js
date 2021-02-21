@@ -1,3 +1,3 @@
 export function Cell(props) {
-  return <span className='cell'>{props.val}</span>;
+  return <span onClick={props.handleClick} className='cell'>{props.val}</span>;
 }

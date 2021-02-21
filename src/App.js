@@ -21,7 +21,7 @@ class App extends Component {
 Grid
         <Grid
           gridsize={6}
-          scale={["C4", "C#4", "E4", "F#4", "G#4", "A#4", "B4", "D5"]}
+          scale={["C4", "E4", "F4", "A4", "B4", "D5"]}
         // todo validate scale size = gridsize
         />
       </div >
