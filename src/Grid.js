@@ -8,20 +8,21 @@ export class Grid extends Ticker {
   constructor(props) {
     super(props);
     this.grid = [...Array(this.props.gridsize).keys()];
-    this.widgets = [];
+    this.widgets = {};
     this.synths = [];
     this.state = {
       widgets: this.widgets,
       synths: this.synths,
       vals: this.initVals(),
     }
+    this.ctr = 0;
 
-    // TODO so far: just support adding, not deleting...
     this.addWidget = (pos0 = 0, pos1 = 0) => {
-      this.widgets.push({ idx: this.state.widgets.length, pos: [pos0, pos1], dir: 0 });
+      this.widgets[this.ctr] = ({ idx: this.ctr, pos: [pos0, pos1], dir: 0 });
       this.synths.push(new Tone.Synth().toDestination());
       this.setState({ ...this.state, synths: this.synths, widgets: this.widgets });
       this.updateVals();
+      this.ctr += 1;
     }
 
     this.handleCellClick.bind(this);
@@ -29,9 +30,24 @@ export class Grid extends Ticker {
   }
 
   handleCellClick = (e, pos0, pos1) => {
-    // Put widget there
-    this.addWidget(pos0, pos1);
-    // TODO only do this when no widget
+    let clickedWidgets = Object.values(this.state.widgets).filter(w => w.pos[0] === pos0 && w.pos[1] === pos1).flat();
+    if (clickedWidgets.length === 0) {
+      // Put widget there
+      this.addWidget(pos0, pos1);
+
+    } else if (clickedWidgets.length === 1) {
+      let idx = clickedWidgets[0].idx;
+      let dir = this.widgets[idx].dir;
+      if (dir < 3) {
+        // rotate widget
+        this.widgets[idx].dir = (dir + 1) % 4;
+      } else {
+        // delete widget
+        delete this.widgets[idx];
+      }
+      this.setState({ ...this.state, widgets: this.widgets });
+      this.updateVals();
+    }
   };
 
   initVals() {
@@ -53,15 +69,13 @@ export class Grid extends Ticker {
 
   updateVals() {
     let vals = this.initVals();
-    this.widgets.forEach(w => vals[w.pos[1]][w.pos[0]] += this.getArrow(w.dir));
+    Object.values(this.widgets).forEach(w => vals[w.pos[1]][w.pos[0]] += this.getArrow(w.dir));
     this.setState({ ...this.state, vals });
   }
 
   tick() {
     this.widgets = this.state.widgets;
-    for (let idx = 0; idx < this.state.widgets.length; idx++) {
-      this.updateWidget(idx);
-    }
+    Object.keys(this.widgets).forEach(idx => this.updateWidget(idx));
     this.setState({ ...this.state, widgets: this.widgets });
     this.handleCollisions();
     this.updateVals();
@@ -122,7 +136,7 @@ export class Grid extends Ticker {
 
   handleCollisions() {
     var data = {};
-    this.widgets.forEach(w => {
+    Object.values(this.widgets).forEach(w => {
       var val = w.pos + "|" + w.dir;
       data[val] = w.idx;
     });
@@ -151,16 +165,18 @@ export class Grid extends Ticker {
     return (
       <div>
         <table>
-          {
-            this.grid.map(num => {
-              return <Row handleCellClick={this.handleCellClick}
-                offset={num} key={num} vals={this.state.vals[num]} len={this.props.gridsize} />
-            })
-          }
+          <tbody>
+            {
+              this.grid.map(num => {
+                return <Row handleCellClick={this.handleCellClick}
+                  offset={num} key={num} vals={this.state.vals[num]} len={this.props.gridsize} />
+              })
+            }
+          </tbody>
         </table>
         <br />
         {
-          this.state.widgets.map(w => {
+          Object.values(this.state.widgets).map(w => {
             return <Widget
               idx={w.idx}
               key={w.idx}
