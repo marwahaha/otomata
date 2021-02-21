@@ -1,9 +1,9 @@
 export function Widget(props) {
     return (
         <div>
-            idx: {props.idx}
+            {/* idx: {props.idx}
             pos: {props.pos.toString()}
-            dir: {props.dir.toString()}
+            dir: {props.dir.toString()} */}
         </div>
     );
 }

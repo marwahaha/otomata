@@ -8,7 +8,7 @@ export class Row extends React.Component {
 
   render() {
     return (
-      <div>
+      <tr>
         {
           this.grid.map(num => {
             let key = this.props.offset * this.props.len + num;
@@ -16,7 +16,7 @@ export class Row extends React.Component {
 
           })
         }
-      </div>
+      </tr>
     );
   }
 }

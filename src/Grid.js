@@ -20,7 +20,7 @@ export class Grid extends Ticker {
     // TODO - I wish this didn't initialize on the top left, but actually where I clicked.
     // Could have callback function to Cell, but then need a way to initialize Widget at location
     // does this need to put pos and dir in props?
-    this.addWidget = (pos0=0, pos1=0) => {
+    this.addWidget = (pos0 = 0, pos1 = 0) => {
       this.widgets.push({ idx: this.state.widgets.length, pos: [pos0, pos1], dir: 0 });
       this.synths.push(new Tone.Synth().toDestination());
       this.setState({ ...this.state, synths: this.synths, widgets: this.widgets });
@@ -39,18 +39,18 @@ export class Grid extends Ticker {
 
   initVals() {
     return new Array(this.props.gridsize).fill('_')
-      .map(x => new Array(this.props.gridsize).fill('_'));
+      .map(x => new Array(this.props.gridsize).fill(''));
   }
 
   getArrow(pos) {
     if (pos === 0) {
-      return 'v';
+      return '🡻';
     } else if (pos === 1) {
-      return '>';
+      return '🡺';
     } else if (pos === 2) {
-      return '^';
+      return '🡹';
     } else {
-      return '<';
+      return '🡸';
     }
   }
 
@@ -153,12 +153,14 @@ export class Grid extends Ticker {
   subrender() {
     return (
       <div>
-        {
-          this.grid.map(num => {
-            return <Row handleCellClick={this.handleCellClick}
-              offset={num} key={num} vals={this.state.vals[num]} len={this.props.gridsize} />
-          })
-        }
+        <table>
+          {
+            this.grid.map(num => {
+              return <Row handleCellClick={this.handleCellClick}
+                offset={num} key={num} vals={this.state.vals[num]} len={this.props.gridsize} />
+            })
+          }
+        </table>
         <br />
         {
           this.state.widgets.map(w => {
