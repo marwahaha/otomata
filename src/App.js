@@ -2,16 +2,10 @@ import './App.css';
 import { Clock } from './Clock';
 import { Grid } from './Grid';
 import { connect } from 'react-redux';
-import { updatePosAction } from './actions/updatePosAction';
-import { updateDirAction } from './actions/updateDirAction';
 import { Component } from 'react';
 
 const mapStateToProps = state => ({
   ...state
-})
-const mapDispatchToProps = dispatch => ({
-  updatePosAction: (idx, pos) => dispatch(updatePosAction(idx, pos)),
-  updateDirAction: (idx, dir) => dispatch(updateDirAction(idx, dir))
 })
 
 class App extends Component {
@@ -26,21 +20,10 @@ class App extends Component {
         <br />
 Grid
         <Grid
-          widgetsPos={this.props.widgetPositionReducer}
-          widgetsDir={this.props.widgetDirectionReducer}
           gridsize={6}
           scale={["C4", "C#4", "E4", "F#4", "G#4", "A#4", "B4", "D5"]}
-          updatePosAction={this.props.updatePosAction}
-          updateDirAction={this.props.updateDirAction}
         // todo validate scale size = gridsize
         />
-        <br />
-        Redux Store
-        <pre>
-          {
-            JSON.stringify(this.props)
-          }
-        </pre>
       </div >
     )
   }
@@ -52,4 +35,4 @@ Grid
 // then change directions if overlap
 
 // TODO may not need redux if use refs on state
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);
