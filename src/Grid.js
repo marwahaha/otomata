@@ -98,7 +98,7 @@ export class Grid extends Ticker {
     } else {
       val = pos[0];
     }
-    synth.triggerAttackRelease(this.props.scale[val], "8n");
+    synth.triggerAttackRelease(this.props.scale[val % this.props.scale.length], "8n");
   }
 
 

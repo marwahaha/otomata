@@ -1,6 +1,6 @@
 .App {
   margin: 20px;
-  padding-top: 30px;
+  padding-top: 10px;
   text-align: center;
   user-select: none;
 }
@@ -20,7 +20,6 @@
   color: #61dafb;
 }
 
-table,
 th,
 td {
   padding: 10px;
@@ -30,6 +29,8 @@ td {
 
 table {
   margin:auto;
+  border: 3px solid black;
+  border-collapse: collapse;
 }
 
 .cell {

@@ -12,9 +12,8 @@ class App extends Component {
     return (
       <div className="App">
         <Grid
-          gridsize={7}
-          scale={["E3", "A3", "D4", "G4", "C5", "E5", "D6"]}
-        // TODO -> assert grid size is not larger than scale size
+          gridsize={9}
+          scale={["E2", "A2", "D3", "G3", "A3", "C4", "F4", "C5", "D5"]}
         />
       </div >
     )
