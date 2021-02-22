@@ -14,7 +14,7 @@ class App extends Component {
         <Grid
           interval={200}
           gridsize={9}
-          scale={["D2", "G2", "C3", "E3", "A3", "F4", "A4", "C5", "D5"]}
+          scale={["E2", "B2", "C3", "D3", "E3", "F#3", "G3", "B3", "D4"]}
         />
       </div >
     )
