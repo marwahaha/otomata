@@ -11,7 +11,7 @@ export class Ticker extends React.Component {
     setTimer = () => {
         this.timerID = setInterval(
             () => this.tick(),
-            250
+            this.props.interval
         );
         this.setState({ ...this.state, timerSet: true });
     }

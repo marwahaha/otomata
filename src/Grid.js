@@ -62,11 +62,11 @@ export class Grid extends Ticker {
 
   getArrow(pos) {
     if (pos === 0) {
-      return '↓';
+      return '↑';
     } else if (pos === 1) {
       return '→';
     } else if (pos === 2) {
-      return '↑';
+      return '↓';
     } else {
       return '←';
     }
@@ -88,9 +88,9 @@ export class Grid extends Ticker {
 
   didHitWall(pos, dir) {
     const last = this.props.gridsize - 1;
-    return (dir === 0 && pos[1] === last)
+    return (dir === 0 && pos[1] === 0)
       || (dir === 1 && pos[0] === last)
-      || (dir === 2 && pos[1] === 0)
+      || (dir === 2 && pos[1] === last)
       || (dir === 3 && pos[0] === 0);
   }
 
@@ -111,18 +111,17 @@ export class Grid extends Ticker {
     let widget = this.widgets[idx];
     let synth = this.synths[idx];
 
-    // if this will hit the wall, reverse and sound and finish
+    // if this will hit the wall, reverse and sound
     if (this.didHitWall(widget.pos, widget.dir)) {
       let newDir = (widget.dir + 2) % 4;
       this.widgets[idx].dir = newDir;
       this.makeSound(widget.pos, widget.dir, synth);
-      return;
     }
 
     let pos = widget.pos;
-    if (widget.dir === 0) {
+    if (widget.dir === 2) {
       pos = [widget.pos[0], (widget.pos[1] + 1 + this.props.gridsize) % this.props.gridsize]
-    } else if (widget.dir === 2) {
+    } else if (widget.dir === 0) {
       pos = [widget.pos[0], (widget.pos[1] - 1 + this.props.gridsize) % this.props.gridsize]
     } else if (widget.dir === 1) {
       pos = [(widget.pos[0] + 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
@@ -130,13 +129,6 @@ export class Grid extends Ticker {
       pos = [(widget.pos[0] - 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
     }
     this.widgets[idx].pos = pos;
-
-    // bounce off wall and make sound if hit a wall
-    if (this.didHitWall(pos, widget.dir)) {
-      let newDir = (widget.dir + 2) % 4;
-      this.widgets[idx].dir = newDir;
-      this.makeSound(widget.pos, widget.dir, synth);
-    }
   }
 
   handleCollisions() {
