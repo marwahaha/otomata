@@ -27,6 +27,11 @@ export class Grid extends Ticker {
 
     this.handleCellClick.bind(this);
 
+    document.addEventListener('keydown', event => {
+      if (event.code === 'Space') {
+        this.toggleTimer();
+      }
+    })
   }
 
   handleCellClick = (e, pos0, pos1) => {

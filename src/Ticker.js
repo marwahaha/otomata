@@ -21,6 +21,10 @@ export class Ticker extends React.Component {
         this.setState({ ...this.state, timerSet: false });
     }
 
+    toggleTimer = () => {
+        this.state.timerSet ? this.unsetTimer() : this.setTimer();
+    }
+
     componentWillUnmount() {
         this.unsetTimer();
     }
@@ -29,13 +33,10 @@ export class Ticker extends React.Component {
         return (
             <div>
                 {this.subrender()}
-                <button disabled={this.state.timerSet} onClick={this.setTimer}>
-                    Play
-        </button>
-                <button disabled={!this.state.timerSet} onClick={this.unsetTimer}>
-                    Pause
-        </button>
-            </div>
+                <button onClick={this.toggleTimer}>
+                    {this.state.timerSet ? "Pause" : "Play"}
+                </button>
+            </div >
         );
     }
 }

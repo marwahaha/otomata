@@ -1,52 +1,43 @@
 .App {
-  margin: 20px;
-  padding-top: 10px;
-  text-align: center;
-  user-select: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    margin: 4vh;
+    text-align: center;
+    user-select: none;
+    height: 92vh;
+    max-height: 92vh;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 th,
 td {
-  padding: 10px;
-  border: 1px solid black;
-  border-collapse: collapse;
+    border: 1px solid gray;
+    border-collapse: collapse;
 }
 
 table {
-  margin:auto;
-  border: 3px solid black;
-  border-collapse: collapse;
+    margin: auto;
+    border: 2px solid black;
+    border-collapse: collapse;
 }
 
 .cell {
-  display: inline-block;
-  width:40px;
-  height: 40px;
-  line-height:40px;
-  cursor:pointer
-
+    display: inline-block;
+    width: min(8vw, 8vh);
+    height: min(8vw, 8vh);
+    line-height: min(8vw, 8vh);
+    cursor: pointer
 }
 
 td {
-  background:lightskyblue;
+    background: lightskyblue;
 }
-td:empty {background: white;}
+
+td:empty {
+    background: white;
+}
 
 html {
-  background:orange;
+    background: orange;
 }
