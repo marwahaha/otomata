@@ -10,10 +10,8 @@
     color: #61dafb;
 }
 
-th,
 td {
     border: 1px solid gray;
-    border-collapse: collapse;
 }
 
 table {
@@ -27,7 +25,9 @@ table {
     width: min(8vw, 8vh);
     height: min(8vw, 8vh);
     line-height: min(8vw, 8vh);
-    cursor: pointer
+    cursor: pointer;
+    font-size: min(4vw, 4vh);
+    font-weight: bolder;
 }
 
 td {

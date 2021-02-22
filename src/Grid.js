@@ -62,13 +62,13 @@ export class Grid extends Ticker {
 
   getArrow(pos) {
     if (pos === 0) {
-      return '🡻';
+      return '↓';
     } else if (pos === 1) {
-      return '🡺';
+      return '→';
     } else if (pos === 2) {
-      return '🡹';
+      return '↑';
     } else {
-      return '🡸';
+      return '←';
     }
   }
 
