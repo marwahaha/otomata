@@ -12,7 +12,7 @@ class App extends Component {
     return (
       <div className="App">
         <Grid
-          interval={200}
+          interval={400}
           gridsize={9}
           scale={["E2", "B2", "C3", "D3", "E3", "F#3", "G3", "B3", "D4"]}
         />

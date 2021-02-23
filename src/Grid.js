@@ -16,10 +16,12 @@ export class Grid extends Ticker {
       vals: this.initVals(),
     }
     this.ctr = 0;
+    const reverb = new Tone.Reverb(0.5).toDestination();
+    const feedback = new Tone.FeedbackDelay(0.3, 0.2).toDestination();
 
     this.addWidget = (pos0 = 0, pos1 = 0) => {
       this.widgets[this.ctr] = ({ idx: this.ctr, pos: [pos0, pos1], dir: 0 });
-      this.synths.push(new Tone.Synth().toDestination());
+      this.synths.push(new Tone.FMSynth().connect(reverb).connect(feedback).toDestination());
       this.setState({ ...this.state, synths: this.synths, widgets: this.widgets });
       this.updateVals();
       this.ctr += 1;
