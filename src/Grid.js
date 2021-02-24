@@ -29,23 +29,33 @@ export class Grid extends Ticker {
     // })
   }
 
+  getURL = () => {
+    this.unsetTimer();
+    const bpm = parseInt(Ticker.convertBpmInterval(this.state.interval), 10);
+
+    let widgets = "";
+    Object.values(this.state.widgets).forEach(widget => {
+      widgets += (widget.pos[0].toString() + widget.pos[1].toString() + widget.dir.toString());
+    })
+
+    alert("http://earslap.com/projectslab/otomata/?q=10_0_" + bpm + "_" + widgets);
+  }
+
   load = () => {
-    // TODO wrap this all in a setstate...
     this.unsetTimer();
     const loc = (this.state.loadInput || "").indexOf("?q=10_");
-    if (loc === -1) {
+    if (loc === -1 || this.state.loadInput.slice(loc).split('_').length < 4) {
       alert("could not parse URL");
       return;
     }
     this.setState((state, _) => {
       const parsed = state.loadInput.slice(loc).split('_')
       const interval = Ticker.convertBpmInterval(parsed[2]);
-      const widgetsToAdd = parsed[3].match(/.{1,3}/g);
+      const widgetsToAdd = parsed[3].match(/.{3}/g) || [];
 
       let newState = {...state, widgets: {}};
 
       for (let idx = 0; idx < widgetsToAdd.length; idx++) {
-        console.log(widgetsToAdd[idx]);
         const pos0 = parseInt( widgetsToAdd[idx][0], 10);
         const pos1 = parseInt( widgetsToAdd[idx][1], 10);
         const dir =  parseInt( widgetsToAdd[idx][2], 10);
@@ -59,7 +69,6 @@ export class Grid extends Ticker {
   _generateSynth = () => new Tone.Synth().connect(this.reverb).connect(this.feedback).toDestination();
 
   _addWidgetInternal = (state, pos0, pos1, dir=0) => {
-    console.log(state.widgets);
     let newWidgets = JSON.parse(JSON.stringify(state.widgets));
     newWidgets[state.ctr] = {idx: state.ctr, pos: [pos0, pos1], dir: dir};
 
@@ -86,7 +95,6 @@ export class Grid extends Ticker {
         if (dir < 3) {
           // rotate widget
           newWidgets[idx].dir = (dir + 1) % 4;
-          // TODO fix double rotation
         } else {
           // delete widget
           delete newWidgets[idx];
@@ -119,7 +127,7 @@ export class Grid extends Ticker {
     return vals;
   }
 
-  tick() {
+  tick = () => {
     this.setState((state, _) => {
       let newWidgets = {};
       Object.keys(state.widgets).forEach(idx => {
@@ -233,7 +241,7 @@ export class Grid extends Ticker {
     }, {});
   };
 
-  subrender() {
+  subrender = () => {
     return (
       <div>
         <table>
