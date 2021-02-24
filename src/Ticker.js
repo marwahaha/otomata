@@ -4,6 +4,10 @@ export class Ticker extends React.Component {
         throw new Error("tick not implemented");
     }
 
+    load() {
+        throw new Error("load not implemented")
+    }
+
     clear() {
         throw new Error("clear not implemented")
     }
@@ -35,8 +39,15 @@ export class Ticker extends React.Component {
 
     changeInterval = (e) => {
         let bpm = parseInt(e.target.value, 10);
-        this.setState({interval:  30000/bpm})
-        // TODO update running ticker...
+        this.setState({interval:  Ticker.convertBpmInterval(bpm)})
+    }
+
+    static convertBpmInterval(a) {
+        return 30000/a;
+    }
+
+    changeLoadInput = (e) => {
+        this.setState({loadInput: e.target.value})
     }
 
     render() {
@@ -51,7 +62,12 @@ export class Ticker extends React.Component {
                 <button onClick={this.clear}>Clear</button>
                 <span className="spacer"/>
                 Tempo:&nbsp;
-                <input className="bpm" onChange={this.changeInterval} disabled={this.state.timerSet} type="number" min="50" max="300" placeholder={parseInt(30000/this.state.interval).toString()}/>
+                <input className="bpm" onChange={this.changeInterval} disabled={this.state.timerSet} type="number" min="50" max="300" placeholder={parseInt(Ticker.convertBpmInterval(this.state.interval)).toString()}/>
+                <div className="urlcontrols">
+                    <input placeholder="earslap URL" onChange={this.changeLoadInput} className="loadurl"></input>&nbsp;<button onClick={this.load}>Load</button>
+                    <span className="spacer"/>
+                    <button onClick={() => alert('coming soon')}>Get URL</button>
+                </div>
                 </div>
             </div >
         );

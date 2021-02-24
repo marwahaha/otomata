@@ -16,6 +16,14 @@
     padding: 0 0 0 3px;
 }
 
+.loadurl {
+    width: 100px;
+}
+
+.urlcontrols {
+    padding-top: 10px;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

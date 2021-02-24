@@ -29,12 +29,42 @@ export class Grid extends Ticker {
     // })
   }
 
-  _addWidgetInternal = (state, pos0, pos1) => {
+  load = () => {
+    // TODO wrap this all in a setstate...
+    this.unsetTimer();
+    const loc = (this.state.loadInput || "").indexOf("?q=10_");
+    if (loc === -1) {
+      alert("could not parse URL");
+      return;
+    }
+    this.setState((state, _) => {
+      const parsed = state.loadInput.slice(loc).split('_')
+      const interval = Ticker.convertBpmInterval(parsed[2]);
+      const widgetsToAdd = parsed[3].match(/.{1,3}/g);
+
+      let newState = {...state, widgets: {}};
+
+      for (let idx = 0; idx < widgetsToAdd.length; idx++) {
+        console.log(widgetsToAdd[idx]);
+        const pos0 = parseInt( widgetsToAdd[idx][0], 10);
+        const pos1 = parseInt( widgetsToAdd[idx][1], 10);
+        const dir =  parseInt( widgetsToAdd[idx][2], 10);
+        newState = this._addWidgetInternal(newState, pos0, pos1, dir);
+      }
+
+      return {...newState, timerSet: false, vals: this.updateVals(newState.widgets), interval};
+    })
+  }
+
+  _generateSynth = () => new Tone.Synth().connect(this.reverb).connect(this.feedback).toDestination();
+
+  _addWidgetInternal = (state, pos0, pos1, dir=0) => {
+    console.log(state.widgets);
     let newWidgets = JSON.parse(JSON.stringify(state.widgets));
-    newWidgets[state.ctr] = {idx: state.ctr, pos: [pos0, pos1], dir: 0};
+    newWidgets[state.ctr] = {idx: state.ctr, pos: [pos0, pos1], dir: dir};
 
     let newSynths = state.synths.slice();
-    newSynths.push(new Tone.Synth().connect(this.reverb).connect(this.feedback).toDestination());
+    newSynths.push(this._generateSynth());
     return { ...state, synths: newSynths, widgets: newWidgets, vals: this.updateVals(newWidgets), ctr: state.ctr + 1 };
   }
 
@@ -103,7 +133,6 @@ export class Grid extends Ticker {
           toSound.push(parseInt(idx, 10));
         };
       });
-      console.log(toSound);
       newWidgets = this.handleCollisions(newWidgets);
       return { ...state, toSound: toSound, widgets: newWidgets, vals: this.updateVals(newWidgets)};
     });
@@ -117,7 +146,6 @@ export class Grid extends Ticker {
       // if hit the wall, sound
       let widget = this.state.widgets[idx];
       let synth = this.state.synths[idx];
-      console.log(idx, widget.pos);
       this.makeSound(widget.pos, widget.dir, synth);
       if (widget.dir % 2) {
         sounded['rows'].push(widget.pos[1]);
