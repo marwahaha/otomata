@@ -1,6 +1,6 @@
 {
-  "name": "conway",
-  "version": "0.1.0",
+  "name": "otomata",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.5",
@@ -16,7 +16,7 @@
     "tone": "^14.7.58",
     "web-vitals": "^0.2.4"
   },
-  "homepage": "https://marwahaha.github.io/conway",
+  "homepage": "https://marwahaha.github.io/otomata",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -1,26 +1,15 @@
+# Otomata: A generative musical sequencer
 
-"Conway": A new generative musical sequencer
+This was originally written [by Earslap](http://earslap.com/page/otomata.html) using Flash in 2011.
 
-The name is in progress. This is heavily inspired by Otomata by Earslap, written in Flash in 2011.
+This is [the JavaScript version](https://marwahaha.github.io/otomata).
 
-Check out [the work in progress](https://marwahaha.github.io/conway/).
+It will accept URLs from the older Flash versions, but as of now only has the default "Otomata" scale. You can find some creations [on this Reddit page](https://www.reddit.com/r/otomata/).
 
+If you have any comments or requests, you can open a GitHub issue or email me at marwahaha@berkeley.edu.
 
-## Debugging stuff
-
-Run `npm run deploy` to update website. I dont think it can be done from GitHub Actions...
-
-
-Clock was a test of the grid:
-```
-        {/* Clocks
-        <Clock scale={["C4", "D4", "G4", "F4"]} />
-        <Clock scale={["C5", "D5", "G5", "Bb4"]} />
-        <Clock scale={["C5", "D5"]} /> */}
-        {/* <br /> */}
-{/* Grid */}
-```
-
+---
+---
 ---
 
 # Getting Started with Create React App
