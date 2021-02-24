@@ -6,15 +6,12 @@
     max-height: 92vh;
 }
 
-.App-link {
-    color: #61dafb;
-}
-
 td {
-    border: 1px solid gray;
+    border: 1px solid #BBD1EA;
 }
 
 .controls {
+    color: white;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -57,13 +54,13 @@ table {
 }
 
 td {
-    background: lightskyblue;
+    background-color: #507DBC;
 }
 
 td:empty {
-    background: white;
+    background-color: #A1C6EA;
 }
 
 html {
-    background: orange;
+    background-color: #04080F;
 }

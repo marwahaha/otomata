@@ -20,11 +20,12 @@ export class Grid extends Ticker {
       ctr: 0,
     }
 
-    document.addEventListener('keydown', event => {
-      if (event.code === 'Space') {
-        this.toggleTimer();
-      }
-    })
+    // TODO this causes tick() to run all the time
+    // document.addEventListener('keydown', event => {
+    //   if (event.code === 'Space') {
+    //     this.toggleTimer();
+    //   }
+    // })
   }
 
   _addWidgetInternal = (state, pos0, pos1) => {
@@ -95,19 +96,42 @@ export class Grid extends Ticker {
       });
       newWidgets = this.handleCollisions(newWidgets);
       return { ...state, widgets: newWidgets, vals: this.updateVals(newWidgets)};
-    })
-    this.playSounds();
+    });
+    let sounded = this.playSounds();
+    this.highlightCells(sounded);
   }
 
   playSounds() {
+    let sounded = {'cols': [], 'rows': []};
     Object.keys(this.state.widgets).forEach(idx => {
       // if hit the wall, sound
       let widget = this.state.widgets[idx];
       let synth = this.state.synths[idx];
       if (this.didHitWall(widget.pos, widget.dir)) {
         this.makeSound(widget.pos, widget.dir, synth);
+
+        if (widget.dir % 2) {
+          sounded['rows'].push(widget.pos[1]);
+        } else {
+          sounded['cols'].push(widget.pos[0]);
+        }
       }
     });
+    return sounded;
+  }
+
+  highlightCells(sounded) {
+    let cellsToFlash = [];
+    for (let i = 0; i < this.props.gridsize; i++) {
+      for (let j=0; j < this.props.gridsize; j++) {
+        if (sounded['rows'].indexOf(i) !== -1  || sounded['cols'].indexOf(j) !== -1) {
+          cellsToFlash.push(i*this.props.gridsize + j);
+        }
+      }
+    }
+    let cells = document.getElementsByClassName("cell");
+    cellsToFlash.forEach(id => {if (!cells[id].innerText) {cells[id].style.backgroundColor = '#DAE3E5'}});
+    setTimeout(() => cellsToFlash.forEach(id => {if (!cells[id].innerText) {cells[id].style.backgroundColor = ''}}), 75);
   }
 
   didHitWall(pos, dir) {
