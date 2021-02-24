@@ -4,6 +4,10 @@ export class Ticker extends React.Component {
         throw new Error("tick not implemented");
     }
 
+    clear() {
+        throw new Error("clear not implemented")
+    }
+
     subrender() {
         throw new Error("subrender not implemented");
     }
@@ -11,7 +15,7 @@ export class Ticker extends React.Component {
     setTimer = () => {
         this.timerID = setInterval(
             () => this.tick(),
-            this.props.interval
+            this.state.interval
         );
         this.setState({ ...this.state, timerSet: true });
     }
@@ -29,13 +33,26 @@ export class Ticker extends React.Component {
         this.unsetTimer();
     }
 
+    changeInterval = (e) => {
+        let bpm = parseInt(e.target.value, 10);
+        this.setState({...this.state, interval:  30000/bpm})
+        // TODO update running ticker...
+    }
+
     render() {
         return (
             <div>
                 {this.subrender()}
+                <div className='controls'>
                 <button onClick={this.toggleTimer}>
                     {this.state.timerSet ? "Pause" : "Play"}
                 </button>
+                <span className="spacer"/>
+                <button onClick={this.clear}>Clear</button>
+                <span className="spacer"/>
+                Tempo:&nbsp;
+                <input className="bpm" onChange={this.changeInterval} disabled={this.state.timerSet} type="number" min="50" max="300" placeholder={parseInt(30000/this.state.interval)}/>
+                </div>
             </div >
         );
     }

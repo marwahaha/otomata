@@ -14,6 +14,7 @@ export class Grid extends Ticker {
       widgets: this.widgets,
       synths: this.synths,
       vals: this.initVals(),
+      interval: 200,
     }
     this.ctr = 0;
     const reverb = new Tone.Reverb(0.3).toDestination();
@@ -34,6 +35,11 @@ export class Grid extends Ticker {
         this.toggleTimer();
       }
     })
+  }
+
+  clear = () => {
+    this.widgets = {};
+    this.setState({...this.state, widgets: this.widgets});
   }
 
   handleCellClick = (e, pos0, pos1) => {
@@ -76,7 +82,7 @@ export class Grid extends Ticker {
 
   updateVals() {
     let vals = this.initVals();
-    Object.values(this.widgets).forEach(w => vals[w.pos[1]][w.pos[0]] += this.getArrow(w.dir));
+    Object.values(this.state.widgets).forEach(w => vals[w.pos[1]][w.pos[0]] += this.getArrow(w.dir));
     this.setState({ ...this.state, vals });
   }
 
