@@ -14,9 +14,8 @@ export class Grid extends Ticker {
     this.DEFAULT_INTERVAL = 200;
 
     this.state = {
-      toSound: [],
       widgets: {},
-      synths: [],
+      synths: {},
       vals: this.initVals(),
       interval: this.DEFAULT_INTERVAL,
       ctr: 0,
@@ -66,7 +65,7 @@ export class Grid extends Ticker {
       const loc = this.state.loadInput.indexOf("?q=");
       const widgetsToAdd = state.loadInput.slice(loc + 3).match(/.{2}/g) || []
 
-      let newState = {...state, widgets: {}};
+      let newState = {...state, widgets: {}, synths: {}};
 
       for (let idx = 0; idx < widgetsToAdd.length; idx++) {
         const pos0 = parseInt( widgetsToAdd[idx][0], 10);
@@ -88,7 +87,7 @@ export class Grid extends Ticker {
       const interval = Ticker.convertBpmInterval(parsed[2]);
       const widgetsToAdd = parsed[3].match(/.{3}/g) || [];
 
-      let newState = {...state, widgets: {}};
+      let newState = {...state, widgets: {}, synths: {}};
 
       for (let idx = 0; idx < widgetsToAdd.length; idx++) {
         const pos0 = parseInt( widgetsToAdd[idx][0], 10);
@@ -106,14 +105,13 @@ export class Grid extends Ticker {
   _addWidgetInternal = (state, pos0, pos1, dir=0) => {
     let newWidgets = JSON.parse(JSON.stringify(state.widgets));
     newWidgets[state.ctr] = {idx: state.ctr, pos: [pos0, pos1], dir: dir};
-
-    let newSynths = state.synths.slice();
-    newSynths.push(this._generateSynth());
+    let newSynths = {...state.synths};
+    newSynths[state.ctr] = this._generateSynth();
     return { ...state, synths: newSynths, widgets: newWidgets, vals: this.updateVals(newWidgets), ctr: state.ctr + 1 };
   }
 
   clear = () => {
-     this.setState((state, _) => ({...state, widgets: {}, vals: this.updateVals({})}));
+     this.setState((state, _) => ({...state, widgets: {}, synths: {}, vals: this.updateVals({})}));
   }
 
   handleCellClick = (e, pos0, pos1) => {
@@ -133,6 +131,7 @@ export class Grid extends Ticker {
         } else {
           // delete widget
           delete newWidgets[idx];
+          delete state.synths[idx];
         }
         return { ...state, widgets: newWidgets, vals: this.updateVals(newWidgets) };
       }
@@ -164,20 +163,13 @@ export class Grid extends Ticker {
 
   tick = () => {
     this.setState((state, _) => {
-      let newWidgets = {};
-      Object.keys(state.widgets).forEach(idx => {
-        newWidgets[idx] = this.updateWidget(state.widgets[idx]);
+      let newWidgets = JSON.parse(JSON.stringify(state.widgets));
+      newWidgets = this.handleCollisions(newWidgets);
+      Object.keys(newWidgets).forEach(idx => {
+        newWidgets[idx] = this.updateWidget(newWidgets[idx]);
       });
 
-      let toSound = [];
-      Object.keys(newWidgets).forEach(idx => {
-        let widget = newWidgets[idx];
-        if (this.didHitWall(widget.pos, widget.dir)) {
-          toSound.push(parseInt(idx, 10));
-        };
-      });
-      newWidgets = this.handleCollisions(newWidgets);
-      return { ...state, toSound: toSound, widgets: newWidgets, vals: this.updateVals(newWidgets)};
+      return { ...state, widgets: newWidgets, vals: this.updateVals(newWidgets)};
     });
     let sounded = this.playSounds();
     this.highlightCells(sounded);
@@ -185,15 +177,16 @@ export class Grid extends Ticker {
 
   playSounds() {
     let sounded = {'cols': [], 'rows': []};
-    this.state.toSound.forEach(idx => {
-      // if hit the wall, sound
-      let widget = this.state.widgets[idx];
+    Object.keys(this.state.widgets).forEach(idx => {
+      const widget = this.state.widgets[idx];
       let synth = this.state.synths[idx];
-      this.makeSound(widget.pos, widget.dir, synth);
-      if (widget.dir % 2) {
-        sounded['rows'].push(widget.pos[1]);
-      } else {
-        sounded['cols'].push(widget.pos[0]);
+      if (this.didHitWall(widget.pos, widget.dir)) {
+        this.makeSound(widget.pos, widget.dir, synth);
+        if (widget.dir % 2) {
+          sounded['rows'].push(widget.pos[1]);
+        } else {
+          sounded['cols'].push(widget.pos[0]);
+        }
       }
     });
     return sounded;
@@ -233,8 +226,7 @@ export class Grid extends Ticker {
     synth.triggerAttackRelease(this.props.scale[val % this.props.scale.length], "8n", Tone.now(), 0.3);
   }
 
-  updateWidget(oldWidget) {
-    let widget = JSON.parse(JSON.stringify(oldWidget));
+  updateWidget(widget) {
     // if this will hit the wall, reverse
     if (this.didHitWall(widget.pos, widget.dir)) {
       widget.dir = (widget.dir + 2) % 4;
