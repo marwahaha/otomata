@@ -16,12 +16,12 @@ export class Grid extends Ticker {
       vals: this.initVals(),
     }
     this.ctr = 0;
-    const reverb = new Tone.Reverb(0.5).toDestination();
+    const reverb = new Tone.Reverb(0.3).toDestination();
     const feedback = new Tone.FeedbackDelay(0.3, 0.2).toDestination();
 
     this.addWidget = (pos0 = 0, pos1 = 0) => {
       this.widgets[this.ctr] = ({ idx: this.ctr, pos: [pos0, pos1], dir: 0 });
-      this.synths.push(new Tone.FMSynth().connect(reverb).connect(feedback).toDestination());
+      this.synths.push(new Tone.Synth().connect(reverb).connect(feedback).toDestination());
       this.setState({ ...this.state, synths: this.synths, widgets: this.widgets });
       this.updateVals();
       this.ctr += 1;
@@ -101,11 +101,11 @@ export class Grid extends Ticker {
     const last = this.props.gridsize - 1;
     // TODO demystify this code
     if ((dir % 2 === 1) && (pos[0] === 0 || pos[0] === last)) {
-      val = pos[1];
+      val = last - pos[1];
     } else {
       val = pos[0];
     }
-    synth.triggerAttackRelease(this.props.scale[val % this.props.scale.length], "8n");
+    synth.triggerAttackRelease(this.props.scale[val % this.props.scale.length], "8n", Tone.now(), 0.3);
   }
 
 
@@ -113,11 +113,10 @@ export class Grid extends Ticker {
     let widget = this.widgets[idx];
     let synth = this.synths[idx];
 
-    // if this will hit the wall, reverse and sound
+    // if this will hit the wall, reverse
     if (this.didHitWall(widget.pos, widget.dir)) {
       let newDir = (widget.dir + 2) % 4;
       this.widgets[idx].dir = newDir;
-      this.makeSound(widget.pos, widget.dir, synth);
     }
 
     let pos = widget.pos;
@@ -131,24 +130,26 @@ export class Grid extends Ticker {
       pos = [(widget.pos[0] - 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
     }
     this.widgets[idx].pos = pos;
+
+    // if hit the wall, sound
+    if (this.didHitWall(pos, widget.dir)) {
+      this.makeSound(widget.pos, widget.dir, synth);
+    }
   }
 
   handleCollisions() {
-    var data = {};
-    Object.values(this.widgets).forEach(w => {
-      var val = w.pos + "|" + w.dir;
-      data[val] = w.idx;
-    });
+    const keysAndVals = Object.values(this.widgets)
+      .map(w => [w.idx, w.pos.join(',')]);
 
-    // Only collide if opposing direction
-    Object.keys(data).forEach(d => {
-      var rev = d.split("|")[0] + "|" + ((parseInt(d.split("|")[1], 10) + 2) % 4);
-      if (data[rev] !== undefined) {
-        // change direction
-        let newDir = (this.widgets[data[rev]].dir + 1) % 4;
-        this.widgets[data[rev]].dir = newDir;
-      }
-    })
+    const groupedWidgetIds = Object.values(this.groupBy(keysAndVals, 1, 0));
+    groupedWidgetIds.filter(x => x.length > 2).flat().forEach(id => {
+      // 3 or more, just reverse direction
+      this.widgets[id].dir = (this.widgets[id].dir + 2) % 4;
+    });
+    groupedWidgetIds.filter(x => x.length === 2).flat().forEach(id => {
+      // 2, rotate
+      this.widgets[id].dir = (this.widgets[id].dir + 1) % 4;
+    });
     this.setState({ ...this.state, widgets: this.widgets });
   }
 
