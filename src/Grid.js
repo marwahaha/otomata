@@ -13,6 +13,7 @@ export class Grid extends Ticker {
     this.feedback = new Tone.FeedbackDelay(0.3, 0.2).toDestination();
 
     this.state = {
+      toSound: [],
       widgets: {},
       synths: [],
       vals: this.initVals(),
@@ -94,8 +95,17 @@ export class Grid extends Ticker {
       Object.keys(state.widgets).forEach(idx => {
         newWidgets[idx] = this.updateWidget(state.widgets[idx]);
       });
+
+      let toSound = [];
+      Object.keys(newWidgets).forEach(idx => {
+        let widget = newWidgets[idx];
+        if (this.didHitWall(widget.pos, widget.dir)) {
+          toSound.push(parseInt(idx, 10));
+        };
+      });
+      console.log(toSound);
       newWidgets = this.handleCollisions(newWidgets);
-      return { ...state, widgets: newWidgets, vals: this.updateVals(newWidgets)};
+      return { ...state, toSound: toSound, widgets: newWidgets, vals: this.updateVals(newWidgets)};
     });
     let sounded = this.playSounds();
     this.highlightCells(sounded);
@@ -103,18 +113,16 @@ export class Grid extends Ticker {
 
   playSounds() {
     let sounded = {'cols': [], 'rows': []};
-    Object.keys(this.state.widgets).forEach(idx => {
+    this.state.toSound.forEach(idx => {
       // if hit the wall, sound
       let widget = this.state.widgets[idx];
       let synth = this.state.synths[idx];
-      if (this.didHitWall(widget.pos, widget.dir)) {
-        this.makeSound(widget.pos, widget.dir, synth);
-
-        if (widget.dir % 2) {
-          sounded['rows'].push(widget.pos[1]);
-        } else {
-          sounded['cols'].push(widget.pos[0]);
-        }
+      console.log(idx, widget.pos);
+      this.makeSound(widget.pos, widget.dir, synth);
+      if (widget.dir % 2) {
+        sounded['rows'].push(widget.pos[1]);
+      } else {
+        sounded['cols'].push(widget.pos[0]);
       }
     });
     return sounded;
