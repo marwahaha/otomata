@@ -7,28 +7,18 @@ import * as Tone from 'tone';
 export class Grid extends Ticker {
   constructor(props) {
     super(props);
+
     this.grid = [...Array(this.props.gridsize).keys()];
-    this.widgets = {};
-    this.synths = [];
+    this.reverb = new Tone.Reverb(0.3).toDestination();
+    this.feedback = new Tone.FeedbackDelay(0.3, 0.2).toDestination();
+
     this.state = {
-      widgets: this.widgets,
-      synths: this.synths,
+      widgets: {},
+      synths: [],
       vals: this.initVals(),
       interval: 200,
+      ctr: 0,
     }
-    this.ctr = 0;
-    const reverb = new Tone.Reverb(0.3).toDestination();
-    const feedback = new Tone.FeedbackDelay(0.3, 0.2).toDestination();
-
-    this.addWidget = (pos0 = 0, pos1 = 0) => {
-      this.widgets[this.ctr] = ({ idx: this.ctr, pos: [pos0, pos1], dir: 0 });
-      this.synths.push(new Tone.Synth().connect(reverb).connect(feedback).toDestination());
-      this.setState({ ...this.state, synths: this.synths, widgets: this.widgets });
-      this.updateVals();
-      this.ctr += 1;
-    }
-
-    this.handleCellClick.bind(this);
 
     document.addEventListener('keydown', event => {
       if (event.code === 'Space') {
@@ -37,38 +27,49 @@ export class Grid extends Ticker {
     })
   }
 
+  _addWidgetInternal = (state, pos0, pos1) => {
+    let newWidgets = JSON.parse(JSON.stringify(state.widgets));
+    newWidgets[state.ctr] = {idx: state.ctr, pos: [pos0, pos1], dir: 0};
+
+    let newSynths = state.synths.slice();
+    newSynths.push(new Tone.Synth().connect(this.reverb).connect(this.feedback).toDestination());
+    return { ...state, synths: newSynths, widgets: newWidgets, vals: this.updateVals(newWidgets), ctr: state.ctr + 1 };
+  }
+
   clear = () => {
-    this.widgets = {};
-    this.setState({...this.state, widgets: this.widgets});
+     this.setState((state, _) => ({...state, widgets: {}, vals: this.updateVals({})}));
   }
 
   handleCellClick = (e, pos0, pos1) => {
-    let clickedWidgets = Object.values(this.state.widgets).filter(w => w.pos[0] === pos0 && w.pos[1] === pos1).flat();
-    if (clickedWidgets.length === 0) {
-      // Put widget there
-      this.addWidget(pos0, pos1);
+    this.setState((state, _) => {
+      let clickedWidgets = Object.values(state.widgets).filter(w => w.pos[0] === pos0 && w.pos[1] === pos1).flat();
+      if (clickedWidgets.length === 0) {
+        // Put widget there
+        return this._addWidgetInternal(state, pos0, pos1);
 
-    } else if (clickedWidgets.length === 1) {
-      let idx = clickedWidgets[0].idx;
-      let dir = this.widgets[idx].dir;
-      if (dir < 3) {
-        // rotate widget
-        this.widgets[idx].dir = (dir + 1) % 4;
-      } else {
-        // delete widget
-        delete this.widgets[idx];
+      } else if (clickedWidgets.length === 1) {
+        let idx = clickedWidgets[0].idx;
+        let newWidgets = JSON.parse(JSON.stringify(state.widgets));
+        let dir = newWidgets[idx].dir;
+        if (dir < 3) {
+          // rotate widget
+          newWidgets[idx].dir = (dir + 1) % 4;
+          // TODO fix double rotation
+        } else {
+          // delete widget
+          delete newWidgets[idx];
+        }
+        return { ...state, widgets: newWidgets, vals: this.updateVals(newWidgets) };
       }
-      this.setState({ ...this.state, widgets: this.widgets });
-      this.updateVals();
-    }
-  };
-
-  initVals() {
-    return new Array(this.props.gridsize).fill('_')
-      .map(x => new Array(this.props.gridsize).fill(''));
+    });
   }
 
-  getArrow(pos) {
+  initVals() {
+    return new Array(this.props.gridsize).fill('')
+      .map(_ => new Array(this.props.gridsize).fill(''));
+  }
+
+  static getArrow(pos) {
     if (pos === 0) {
       return '↑';
     } else if (pos === 1) {
@@ -80,18 +81,33 @@ export class Grid extends Ticker {
     }
   }
 
-  updateVals() {
+  updateVals(widgets) {
     let vals = this.initVals();
-    Object.values(this.state.widgets).forEach(w => vals[w.pos[1]][w.pos[0]] += this.getArrow(w.dir));
-    this.setState({ ...this.state, vals });
+    Object.values(widgets).forEach(w => vals[w.pos[1]][w.pos[0]] += Grid.getArrow(w.dir));
+    return vals;
   }
 
   tick() {
-    this.widgets = this.state.widgets;
-    Object.keys(this.widgets).forEach(idx => this.updateWidget(idx));
-    this.setState({ ...this.state, widgets: this.widgets });
-    this.handleCollisions();
-    this.updateVals();
+    this.setState((state, _) => {
+      let newWidgets = {};
+      Object.keys(state.widgets).forEach(idx => {
+        newWidgets[idx] = this.updateWidget(state.widgets[idx]);
+      });
+      newWidgets = this.handleCollisions(newWidgets);
+      return { ...state, widgets: newWidgets, vals: this.updateVals(newWidgets)};
+    })
+    this.playSounds();
+  }
+
+  playSounds() {
+    Object.keys(this.state.widgets).forEach(idx => {
+      // if hit the wall, sound
+      let widget = this.state.widgets[idx];
+      let synth = this.state.synths[idx];
+      if (this.didHitWall(widget.pos, widget.dir)) {
+        this.makeSound(widget.pos, widget.dir, synth);
+      }
+    });
   }
 
   didHitWall(pos, dir) {
@@ -114,49 +130,40 @@ export class Grid extends Ticker {
     synth.triggerAttackRelease(this.props.scale[val % this.props.scale.length], "8n", Tone.now(), 0.3);
   }
 
-
-  updateWidget(idx) {
-    let widget = this.widgets[idx];
-    let synth = this.synths[idx];
-
+  updateWidget(oldWidget) {
+    let widget = JSON.parse(JSON.stringify(oldWidget));
     // if this will hit the wall, reverse
     if (this.didHitWall(widget.pos, widget.dir)) {
-      let newDir = (widget.dir + 2) % 4;
-      this.widgets[idx].dir = newDir;
+      widget.dir = (widget.dir + 2) % 4;
     }
 
-    let pos = widget.pos;
     if (widget.dir === 2) {
-      pos = [widget.pos[0], (widget.pos[1] + 1 + this.props.gridsize) % this.props.gridsize]
+      widget.pos = [widget.pos[0], (widget.pos[1] + 1 + this.props.gridsize) % this.props.gridsize]
     } else if (widget.dir === 0) {
-      pos = [widget.pos[0], (widget.pos[1] - 1 + this.props.gridsize) % this.props.gridsize]
+      widget.pos = [widget.pos[0], (widget.pos[1] - 1 + this.props.gridsize) % this.props.gridsize]
     } else if (widget.dir === 1) {
-      pos = [(widget.pos[0] + 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
+      widget.pos = [(widget.pos[0] + 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
     } else {
-      pos = [(widget.pos[0] - 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
+      widget.pos = [(widget.pos[0] - 1 + this.props.gridsize) % this.props.gridsize, widget.pos[1]];
     }
-    this.widgets[idx].pos = pos;
 
-    // if hit the wall, sound
-    if (this.didHitWall(pos, widget.dir)) {
-      this.makeSound(widget.pos, widget.dir, synth);
-    }
+    return widget;
   }
 
-  handleCollisions() {
-    const keysAndVals = Object.values(this.widgets)
+  handleCollisions(widgets) {
+    const keysAndVals = Object.values(widgets)
       .map(w => [w.idx, w.pos.join(',')]);
 
     const groupedWidgetIds = Object.values(this.groupBy(keysAndVals, 1, 0));
     groupedWidgetIds.filter(x => x.length > 2).flat().forEach(id => {
       // 3 or more, just reverse direction
-      this.widgets[id].dir = (this.widgets[id].dir + 2) % 4;
+      widgets[id].dir = (widgets[id].dir + 2) % 4;
     });
     groupedWidgetIds.filter(x => x.length === 2).flat().forEach(id => {
       // 2, rotate
-      this.widgets[id].dir = (this.widgets[id].dir + 1) % 4;
+      widgets[id].dir = (widgets[id].dir + 1) % 4;
     });
-    this.setState({ ...this.state, widgets: this.widgets });
+    return widgets;
   }
 
   groupBy(xs, key, access) {
@@ -165,7 +172,6 @@ export class Grid extends Ticker {
       return rv;
     }, {});
   };
-
 
   subrender() {
     return (
@@ -191,9 +197,7 @@ export class Grid extends Ticker {
             />
           })
         }
-
       </div>
-
     );
   }
 }

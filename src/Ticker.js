@@ -17,12 +17,12 @@ export class Ticker extends React.Component {
             () => this.tick(),
             this.state.interval
         );
-        this.setState({ ...this.state, timerSet: true });
-    }
+        this.setState((state, _) =>  ({...state, timerSet: true}));
+      }
 
     unsetTimer = () => {
         clearInterval(this.timerID);
-        this.setState({ ...this.state, timerSet: false });
+        this.setState((state, _) =>  ({...state, timerSet: false}));
     }
 
     toggleTimer = () => {
@@ -35,7 +35,7 @@ export class Ticker extends React.Component {
 
     changeInterval = (e) => {
         let bpm = parseInt(e.target.value, 10);
-        this.setState({...this.state, interval:  30000/bpm})
+        this.setState({interval:  30000/bpm})
         // TODO update running ticker...
     }
 
@@ -51,7 +51,7 @@ export class Ticker extends React.Component {
                 <button onClick={this.clear}>Clear</button>
                 <span className="spacer"/>
                 Tempo:&nbsp;
-                <input className="bpm" onChange={this.changeInterval} disabled={this.state.timerSet} type="number" min="50" max="300" placeholder={parseInt(30000/this.state.interval)}/>
+                <input className="bpm" onChange={this.changeInterval} disabled={this.state.timerSet} type="number" min="50" max="300" placeholder={parseInt(30000/this.state.interval).toString()}/>
                 </div>
             </div >
         );
