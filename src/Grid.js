@@ -11,14 +11,16 @@ export class Grid extends Ticker {
     this.grid = [...Array(this.props.gridsize).keys()];
     this.reverb = new Tone.Reverb(0.3).toDestination();
     this.feedback = new Tone.FeedbackDelay(0.3, 0.2).toDestination();
+    this.DEFAULT_INTERVAL = 200;
 
     this.state = {
       toSound: [],
       widgets: {},
       synths: [],
       vals: this.initVals(),
-      interval: 200,
+      interval: this.DEFAULT_INTERVAL,
       ctr: 0,
+      loadInput: "",
     }
 
     // TODO this causes tick() to run all the time
@@ -43,12 +45,45 @@ export class Grid extends Ticker {
 
   load = () => {
     this.unsetTimer();
-    const loc = (this.state.loadInput || "").indexOf("?q=10_");
-    if (loc === -1 || this.state.loadInput.slice(loc).split('_').length < 4) {
-      alert("could not parse URL");
-      return;
+    const loc = this.state.loadInput.indexOf("?q=");
+    if (loc !== -1) {
+      const query = this.state.loadInput.slice(loc + 3).split('_');
+      if (query.length === 4) {
+        return this.loadNewWay();
+      } else if (query.length === 1) {
+        return this.loadOldWay();
+      }
     }
+    alert("could not parse URL");
+    return;
+
+  }
+
+  loadOldWay = () => {
+    // http://www.earslap.com/projectslab/otomata?q=0g636n4q6v1d3v832t
     this.setState((state, _) => {
+      const lookup = 'qwertyuiopasdfghjklzxcvbnm0123456789';
+      const loc = this.state.loadInput.indexOf("?q=");
+      const widgetsToAdd = state.loadInput.slice(loc + 3).match(/.{2}/g) || []
+
+      let newState = {...state, widgets: {}};
+
+      for (let idx = 0; idx < widgetsToAdd.length; idx++) {
+        const pos0 = parseInt( widgetsToAdd[idx][0], 10);
+        const value = lookup.indexOf(widgetsToAdd[idx][1]);
+        const dir =  value % 4;
+        const pos1 = parseInt((value - dir)/4, 10);
+        newState = this._addWidgetInternal(newState, pos0, pos1, dir);
+      }
+
+      return {...newState, timerSet: false, vals: this.updateVals(newState.widgets), interval: this.DEFAULT_INTERVAL};
+    })
+  }
+
+  loadNewWay = () => {
+    // http://earslap.com/projectslab/otomata/?q=10_0_150_862771880062173080
+    this.setState((state, _) => {
+      const loc = state.loadInput.indexOf("?q=");
       const parsed = state.loadInput.slice(loc).split('_')
       const interval = Ticker.convertBpmInterval(parsed[2]);
       const widgetsToAdd = parsed[3].match(/.{3}/g) || [];

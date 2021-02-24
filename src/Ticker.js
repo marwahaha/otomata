@@ -61,7 +61,7 @@ export class Ticker extends React.Component {
                 Tempo:&nbsp;
                 <input className="bpm" onChange={this.changeInterval} value={this.renderTempo()} disabled={this.state.timerSet} type="number" min="50" max="300" placeholder={this.renderTempo()}/>
                 <div className="urlcontrols">
-                    <input placeholder="earslap URL" onChange={this.changeLoadInput} className="loadurl"></input>&nbsp;<button onClick={this.load}>Load</button>
+                    <input placeholder="earslap URL" onChange={this.changeLoadInput} value={this.state.loadInput} className="loadurl"></input>&nbsp;<button onClick={this.load}>Load</button>
                     <span className="spacer"/>
                     <button onClick={this.getURL}>Get URL</button>
                 </div>
