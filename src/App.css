@@ -6,15 +6,6 @@
     max-height: 92vh;
 }
 
-td {
-    border: 1px solid #BBD1EA;
-}
-
-.controls {
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
 .spacer {
     width:20px;
     display:inline-block;
@@ -37,12 +28,6 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-table {
-    margin: auto;
-    border: 2px solid black;
-    border-collapse: collapse;
-}
-
 .cell {
     display: inline-block;
     width: min(8vw, 8vh);
@@ -53,14 +38,31 @@ table {
     font-weight: bolder;
 }
 
+.controls {
+    color: #bcbaec;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+    margin: auto;
+    border: 2px solid #bcbaec;
+    border-collapse: collapse;
+}
+
+.cell.flashing {
+    background-color: #e18ae4;
+}
+
 td {
-    background-color: #507DBC;
+    border: 1px solid #bcbaec;
+    background-color: #fdf4d8;
 }
 
 td:empty {
-    background-color: #A1C6EA;
+    background-color: rgb(162, 31, 255)  ;
 }
 
 html {
-    background-color: #04080F;
+    background-color: #02050c;
+    color:  #3e3d4d;
 }

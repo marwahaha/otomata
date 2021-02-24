@@ -130,8 +130,8 @@ export class Grid extends Ticker {
       }
     }
     let cells = document.getElementsByClassName("cell");
-    cellsToFlash.forEach(id => {if (!cells[id].innerText) {cells[id].style.backgroundColor = '#DAE3E5'}});
-    setTimeout(() => cellsToFlash.forEach(id => {if (!cells[id].innerText) {cells[id].style.backgroundColor = ''}}), 75);
+    cellsToFlash.forEach(id => {if (!cells[id].innerText) {cells[id].className = 'cell flashing'}});
+    setTimeout(() => cellsToFlash.forEach(id => {if (!cells[id].innerText) {cells[id].className = 'cell'}}), 75);
   }
 
   didHitWall(pos, dir) {
