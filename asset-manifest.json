@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/otomata/static/css/main.fb34b89f.chunk.css",
+    "main.js": "/otomata/static/js/main.475d2caf.chunk.js",
+    "main.js.map": "/otomata/static/js/main.475d2caf.chunk.js.map",
+    "runtime-main.js": "/otomata/static/js/runtime-main.51e1571f.js",
+    "runtime-main.js.map": "/otomata/static/js/runtime-main.51e1571f.js.map",
+    "static/js/2.e62a31fa.chunk.js": "/otomata/static/js/2.e62a31fa.chunk.js",
+    "static/js/2.e62a31fa.chunk.js.map": "/otomata/static/js/2.e62a31fa.chunk.js.map",
+    "index.html": "/otomata/index.html",
+    "static/css/main.fb34b89f.chunk.css.map": "/otomata/static/css/main.fb34b89f.chunk.css.map",
+    "static/js/2.e62a31fa.chunk.js.LICENSE.txt": "/otomata/static/js/2.e62a31fa.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.51e1571f.js",
+    "static/js/2.e62a31fa.chunk.js",
+    "static/css/main.fb34b89f.chunk.css",
+    "static/js/main.475d2caf.chunk.js"
+  ]
+}
