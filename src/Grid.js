@@ -19,7 +19,7 @@ export class Grid extends Ticker {
       vals: this.initVals(),
       interval: this.DEFAULT_INTERVAL,
       ctr: 0,
-      loadInput: "",
+      loadInput: window.location.search,
       scaleId: 0,
     }
 
@@ -31,6 +31,12 @@ export class Grid extends Ticker {
     // })
   }
 
+  componentDidMount() {
+    if (this.state.loadInput) {
+      this.load();
+    }
+  }
+
   getURL = () => {
     this.unsetTimer();
     const bpm = parseInt(Ticker.convertBpmInterval(this.state.interval), 10);
@@ -40,7 +46,7 @@ export class Grid extends Ticker {
       widgets += (widget.pos[0].toString() + widget.pos[1].toString() + widget.dir.toString());
     })
 
-    alert("http://earslap.com/projectslab/otomata/?q=10_" + this.state.scaleId + "_" + bpm + "_" + widgets);
+    alert("https://marwahaha.github.io/otomata/?q=10_" + this.state.scaleId + "_" + bpm + "_" + widgets);
   }
 
   load = () => {
