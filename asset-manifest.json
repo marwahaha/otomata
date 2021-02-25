@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/otomata/static/css/main.fb34b89f.chunk.css",
-    "main.js": "/otomata/static/js/main.8127a139.chunk.js",
-    "main.js.map": "/otomata/static/js/main.8127a139.chunk.js.map",
+    "main.css": "/otomata/static/css/main.1ce31a76.chunk.css",
+    "main.js": "/otomata/static/js/main.d680a1f4.chunk.js",
+    "main.js.map": "/otomata/static/js/main.d680a1f4.chunk.js.map",
     "runtime-main.js": "/otomata/static/js/runtime-main.51e1571f.js",
     "runtime-main.js.map": "/otomata/static/js/runtime-main.51e1571f.js.map",
-    "static/js/2.e1975ccc.chunk.js": "/otomata/static/js/2.e1975ccc.chunk.js",
-    "static/js/2.e1975ccc.chunk.js.map": "/otomata/static/js/2.e1975ccc.chunk.js.map",
+    "static/js/2.d4bc51a3.chunk.js": "/otomata/static/js/2.d4bc51a3.chunk.js",
+    "static/js/2.d4bc51a3.chunk.js.map": "/otomata/static/js/2.d4bc51a3.chunk.js.map",
     "index.html": "/otomata/index.html",
-    "static/css/main.fb34b89f.chunk.css.map": "/otomata/static/css/main.fb34b89f.chunk.css.map",
-    "static/js/2.e1975ccc.chunk.js.LICENSE.txt": "/otomata/static/js/2.e1975ccc.chunk.js.LICENSE.txt"
+    "static/css/main.1ce31a76.chunk.css.map": "/otomata/static/css/main.1ce31a76.chunk.css.map",
+    "static/js/2.d4bc51a3.chunk.js.LICENSE.txt": "/otomata/static/js/2.d4bc51a3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.51e1571f.js",
-    "static/js/2.e1975ccc.chunk.js",
-    "static/css/main.fb34b89f.chunk.css",
-    "static/js/main.8127a139.chunk.js"
+    "static/js/2.d4bc51a3.chunk.js",
+    "static/css/main.1ce31a76.chunk.css",
+    "static/js/main.d680a1f4.chunk.js"
   ]
 }
