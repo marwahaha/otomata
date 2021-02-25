@@ -13,7 +13,6 @@ class App extends Component {
       <div className="App">
         <Grid
           gridsize={9}
-          scale={["E3", "B3", "C4", "D4", "E4", "F#4", "G4", "B4", "D5"]}
         />
       </div >
     )

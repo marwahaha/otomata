@@ -20,6 +20,7 @@ export class Grid extends Ticker {
       interval: this.DEFAULT_INTERVAL,
       ctr: 0,
       loadInput: "",
+      scaleId: 0,
     }
 
     // TODO this causes tick() to run all the time
@@ -39,7 +40,7 @@ export class Grid extends Ticker {
       widgets += (widget.pos[0].toString() + widget.pos[1].toString() + widget.dir.toString());
     })
 
-    alert("http://earslap.com/projectslab/otomata/?q=10_0_" + bpm + "_" + widgets);
+    alert("http://earslap.com/projectslab/otomata/?q=10_" + this.state.scaleId + "_" + bpm + "_" + widgets);
   }
 
   load = () => {
@@ -75,7 +76,7 @@ export class Grid extends Ticker {
         newState = this._addWidgetInternal(newState, pos0, pos1, dir);
       }
 
-      return {...newState, timerSet: false, vals: this.updateVals(newState.widgets), interval: this.DEFAULT_INTERVAL};
+      return {...newState, scaleId: 0, timerSet: false, vals: this.updateVals(newState.widgets), interval: this.DEFAULT_INTERVAL};
     })
   }
 
@@ -84,6 +85,7 @@ export class Grid extends Ticker {
     this.setState((state, _) => {
       const loc = state.loadInput.indexOf("?q=");
       const parsed = state.loadInput.slice(loc).split('_')
+      const scaleId = parseInt(parsed[1], 10);
       const interval = Ticker.convertBpmInterval(parsed[2]);
       const widgetsToAdd = parsed[3].match(/.{3}/g) || [];
 
@@ -96,7 +98,7 @@ export class Grid extends Ticker {
         newState = this._addWidgetInternal(newState, pos0, pos1, dir);
       }
 
-      return {...newState, timerSet: false, vals: this.updateVals(newState.widgets), interval};
+      return {...newState, scaleId, timerSet: false, vals: this.updateVals(newState.widgets), interval};
     })
   }
 
@@ -223,7 +225,8 @@ export class Grid extends Ticker {
     } else {
       val = pos[0];
     }
-    synth.triggerAttackRelease(this.props.scale[val % this.props.scale.length], "8n", Tone.now(), 0.3);
+    const scale = Ticker.ALL_SCALES[this.state.scaleId].scale;
+    synth.triggerAttackRelease(scale[val % scale.length], "8n", Tone.now(), 0.3);
   }
 
   updateWidget(widget) {

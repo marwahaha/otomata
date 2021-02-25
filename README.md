@@ -4,9 +4,11 @@ This was originally written [by Earslap](http://earslap.com/page/otomata.html) u
 
 This is [the JavaScript version](https://marwahaha.github.io/otomata).
 
-It will accept URLs from the older Flash versions, but as of now only has the default "Otomata" scale. You can find some creations [on this Reddit page](https://www.reddit.com/r/otomata/).
+It will accept URLs from the older Flash versions too. You can find some creations [on this Reddit page](https://www.reddit.com/r/otomata/).
 
 If you have any comments or requests, you can open a GitHub issue or email me at marwahaha@berkeley.edu.
+
+To play the original Flash version, you can [download Flash player](https://www.adobe.com/support/flashplayer/debug_downloads.html). When you run it, use the URL for the [new version](http://www.earslap.com/assets/otomata/iotomata.swf) or the [old version](http://www.earslap.com/assets/otomata/otomata.swf).
 
 ---
 ---
