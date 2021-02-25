@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/otomata/static/css/main.1ce31a76.chunk.css",
-    "main.js": "/otomata/static/js/main.d680a1f4.chunk.js",
-    "main.js.map": "/otomata/static/js/main.d680a1f4.chunk.js.map",
+    "main.js": "/otomata/static/js/main.e6f95dc5.chunk.js",
+    "main.js.map": "/otomata/static/js/main.e6f95dc5.chunk.js.map",
     "runtime-main.js": "/otomata/static/js/runtime-main.51e1571f.js",
     "runtime-main.js.map": "/otomata/static/js/runtime-main.51e1571f.js.map",
     "static/js/2.d4bc51a3.chunk.js": "/otomata/static/js/2.d4bc51a3.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.51e1571f.js",
     "static/js/2.d4bc51a3.chunk.js",
     "static/css/main.1ce31a76.chunk.css",
-    "static/js/main.d680a1f4.chunk.js"
+    "static/js/main.e6f95dc5.chunk.js"
   ]
 }
